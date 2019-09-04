@@ -1,0 +1,94 @@
+﻿@model IEnumerable<Contacts.MVC.Models.ContactsModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<br />
+
+<p align="right">
+  <a href="@Url.Action("AddOrEdit", "Contacts")" class="btn btn-default"><i class="fa fa-plus"></i> Create New</a>
+  <input type="text" id="search"  placeholder="Please enter a contact id">
+  <a onclick="Search()" class="btn btn-default"><i class="fa fa-search"></i> Search</a>
+</p>
+
+<table class="table table-striped">
+    <thead class="table-heading">
+        <tr>
+            <th>
+                <!--Html.DisplayNameFor(model => model.ContactID)-->
+                Contact ID
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                <!--@Html.DisplayNameFor(model => model.PhoneNumber)-->
+                Phone Number
+            </th>
+            <th>
+                <!--@Html.DisplayNameFor(model => model.EmailAddress)-->
+                Email Address
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    @foreach (var item in Model)
+    {
+<tr>
+    <td>
+        @Html.DisplayFor(model => item.ContactID)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Name)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.PhoneNumber)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.EmailAddress)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Address)
+    </td>
+    <td>
+        <a href="@Url.Action("AddOrEdit", "Contacts", new {id = item.ContactID })" class="btn btn-default"><i class="fa fa-pencil"></i> Edit</a>
+        <a onclick="Delete(@item.ContactID)" class="btn btn-default"><i class="fa fa-trash"></i> Delete</a>
+    </td>
+</tr>
+    }
+</table>
+
+@section scripts{
+    <script>
+        $(function () {
+            var successMessage = '@TempData["SuccessMessage"]'
+            var errorMessage = '@TempData["ErrorMessage"]'
+            if (successMessage != '')
+                alertify.success(successMessage);
+            else if (errorMessage != '') {
+                alertify.error(errorMessage)
+            }
+        });
+
+        function Delete(id) {
+            alertify.confirm('Contact Alert', 'Are you sure you want to delete this contact?', function () {
+                window.location.href = '@Url.Action("Delete", "Contacts")/' + id;
+            }, null );
+        }
+
+        function Search() {
+            let ContID = document.getElementById("search").value;
+            if (ContID == "") {
+                alertify.error("Please enter a Contact ID");
+            }
+            else {
+                window.location.href = '@Url.Action("Search", "Contacts")/' + ContID;
+            }
+        }
+    </script>
+}
